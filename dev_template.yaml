@@ -1,0 +1,23 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Deck Consultant Backend
+
+Globals:
+  Function:
+    Runtime: ruby3.2
+
+Resources:
+  DeckConsultantLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName: deck_consultant
+      ContentUri: layer/
+
+  CreateUser:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: lambdas/create_user/
+      Handler: app.create_user
+      Timeout: 15
+      Layers:
+        - !Ref DeckConsultantLayer

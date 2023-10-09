@@ -25,6 +25,18 @@ describe 'update user lamdba' do
        }.from(0).to(10)
     end
 
+    context 'when cards are sent' do
+      let(:event) { {
+        "user_id" => 'testid1234',
+        "cards" => { "slash" => 5, "block" => 5 }
+      } }
+
+      it 'sets cards' do
+        expect_any_instance_of(DeckConsultant::User).to receive(:set_cards).with(event['cards']).and_call_original
+        expect(update_user(event: event)).to include(cards: event['cards'])
+      end
+    end
+
     context 'when data to update is the same' do
       let(:event) { {
         "user_id" => 'testid1234',

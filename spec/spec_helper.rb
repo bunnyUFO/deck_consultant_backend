@@ -19,6 +19,7 @@ RSpec.configure do |config|
 
   config.before(:each) do
     DeckConsultant::User.destroy_all
+    DeckConsultant::CardCount.destroy_all
   end
 
   config.expect_with :rspec do |expectations|

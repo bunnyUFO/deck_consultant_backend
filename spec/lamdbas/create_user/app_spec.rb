@@ -15,17 +15,32 @@ describe 'create user lamdba' do
   end
 
   it 'creates a user' do
-    expect(DeckConsultant::User).to receive(:create!).with( user_id: 'testid1234',
+    expect(DeckConsultant::User).to receive(:new).with( user_id: 'testid1234',
                                                            username: 'testname',
                                                            gold: 100,
                                                            reputation: 0).and_call_original
     expect(create_user(event: event)). to eq({ message: "Created user with username testname" })
   end
 
+  context 'when there are cards' do
+    let(:event) {{
+      "user_id" => 'testid1234',
+      "username" => 'testname',
+      "gold" => 100,
+      "reputation" => 0,
+      "cards" => { "slash" => 5, "block" => 5}
+    }}
+
+    it 'creates a user with cards' do
+      expect_any_instance_of(DeckConsultant::User).to receive(:set_cards).with({ "slash" => 5, "block" => 5}).and_call_original
+      create_user(event: event)
+    end
+  end
+
   context 'when user already exsists' do
     it 'does not create user' do
       create_user(event: event)
-      expect(DeckConsultant::User).to receive(:create!).with( user_id: 'testid1234',
+      expect(DeckConsultant::User).to receive(:new).with( user_id: 'testid1234',
                                                               username: 'testname',
                                                               gold: 100,
                                                               reputation: 0).and_call_original

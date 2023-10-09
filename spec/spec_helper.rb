@@ -1,6 +1,24 @@
 require 'rspec'
+require 'rake'
+require 'rspec'
+require 'logger'
+require 'nokogiri'
+require 'aws-sdk-core'
+require 'aws-sdk-dynamodb'
+require 'dynamoid'
+
+# Reduce noise in test output
+Dynamoid.logger.level = Logger::FATAL
+Dynamoid.configure do |config|
+  config.namespace = nil
+end
+
 
 RSpec.configure do |config|
+
+  config.before(:each) do
+    DeckConsultant::User.destroy_all
+  end
 
   config.expect_with :rspec do |expectations|
     expectations.include_chain_clauses_in_custom_matcher_descriptions = true

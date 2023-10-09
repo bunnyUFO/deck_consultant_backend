@@ -5,6 +5,12 @@ Description: Deck Consultant Backend
 Globals:
   Function:
     Runtime: ruby3.2
+    Environment:
+      Variables:
+        environment: development
+    Layers:
+      - !Ref DeckConsultantLayer
+    Timeout: 10
 
 Resources:
   DeckConsultantLayer:
@@ -19,5 +25,11 @@ Resources:
       CodeUri: lambdas/create_user/
       Handler: app.create_user
       Timeout: 15
-      Layers:
-        - !Ref DeckConsultantLayer
+
+
+  GetUser:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: lambdas/get_user/
+      Handler: app.get_user
+      Timeout: 15

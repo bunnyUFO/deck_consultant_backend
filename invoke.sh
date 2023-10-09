@@ -1,12 +1,12 @@
 #!/bin/bash
 # Development script to build lambda
-WORKSPACE=${WORKSPACE:=`pwd`}
+WORKSPACE=${WORKSPACE:=`dirname $0`}
 TEMPLATE=${TEMPLATE:-"dev_template.yaml"}
 LAMBDANAME=${1:-"CreateUser"}
-PAYLOAD=${2:-'{ "data": "test" }'}
+PAYLOAD=${2:-'{ "user_id": "1", "username": "username", "gold": 100, "reputation": 0 }'}
 
-  echo $PAYLOAD | sam local invoke \
-    --docker-network host \
+  echo $PAYLOAD | sam local invoke\
+    --docker-network localstack_default\
     --region us-west-2 \
     --event - \
     $LAMBDANAME

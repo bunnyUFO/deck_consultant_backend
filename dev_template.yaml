@@ -33,3 +33,10 @@ Resources:
       CodeUri: lambdas/get_user/
       Handler: app.get_user
       Timeout: 15
+
+  UpdateUser:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: lambdas/update_user/
+      Handler: app.update_user
+      Timeout: 15

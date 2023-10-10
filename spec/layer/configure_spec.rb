@@ -35,7 +35,7 @@ describe Configure do
 
     it 'sets configuraitons' do
       subject
-      expect(Dynamoid::Config.namespace).to eq(nil)
+      expect(Dynamoid::Config.namespace).to eq('deck_consultant')
       expect(Dynamoid::Config.timestamps).to eq(true)
     end
   end

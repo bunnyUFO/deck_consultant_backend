@@ -4,7 +4,7 @@ require 'card_count'
 module DeckConsultant
   class User
     include Dynamoid::Document
-    table name: :deck_consultant_users, key: :user_id, read_capacity: 5, write_capacity: 5
+    table name: :users, key: :user_id, read_capacity: 5, write_capacity: 5
 
     field :username
     field :gold, :integer

@@ -10,7 +10,7 @@ require 'dynamoid'
 # Reduce noise in test output
 Dynamoid.logger.level = Logger::FATAL
 Dynamoid.configure do |config|
-  config.namespace = nil
+  config.namespace = 'deck_consultant'
 end
 
 RSpec::Matchers.define_negated_matcher :not_change, :change

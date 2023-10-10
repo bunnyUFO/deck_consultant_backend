@@ -11,7 +11,7 @@ module Configure
     require "dynamoid"
 
     Dynamoid.configure do |config|
-      config.namespace = nil
+      config.namespace = 'deck_consultant'
       config.timestamps = true
       config.endpoint = 'http://localstack:4566' if ENV['environment'] == 'development'
     end

@@ -33,7 +33,36 @@ describe 'update user lamdba' do
 
       it 'sets cards' do
         expect_any_instance_of(DeckConsultant::User).to receive(:set_cards).with(event['cards']).and_call_original
-        expect(update_user(event: event)).to include(cards: event['cards'])
+        expect(update_user(event: event)).to include(cards: event['cards'].transform_keys(&:to_sym))
+      end
+    end
+
+    context 'when quests are sent' do
+      let(:event) { {
+        "user_id" => 'testid1234',
+        "quests" => [
+          { "scenario_id" => 2, "complete" => false, "random_seed" => 2, "duration" => 60 }
+        ]
+      } }
+
+      it 'sets quests' do
+        expect_any_instance_of(DeckConsultant::User).to receive(:set_quests).with(event['quests']).and_call_original
+        expect(update_user(event: event))
+          .to include(
+                {
+                  quests: {
+                    complete: [],
+                    pending: [
+                      { id: anything,
+                        scenario_id: 2,
+                        complete: false,
+                        random_seed: 2,
+                        duration: 60,
+                        remaining: 60
+                      }
+                    ]
+                  }
+                })
       end
     end
 

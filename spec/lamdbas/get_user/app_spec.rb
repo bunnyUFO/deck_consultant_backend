@@ -6,14 +6,19 @@ describe 'get user lamdba' do
   }}
 
   let(:user_params) { { user_id: 'testid1234', username: 'testname', gold: 100, reputation: 0 } }
+  let(:cards) { { slash: 5, block: 5 } }
+  let(:pending_quest_data) { { scenario_id: 1, complete: false, random_seed: 10, duration: 10 }}
+  let(:completed_quest_data) { { scenario_id: 2, complete: true, random_seed: 98, duration: 10}}
 
   context 'when user exists' do
     let!(:user) { DeckConsultant::User.create(user_params)}
+    let!(:pending_quest) { user.quests.create(pending_quest_data) }
+    let!(:completed_quest) { user.quests.create(completed_quest_data) }
 
 
     it 'returns user info' do
       expect(DeckConsultant::User).to receive(:find).with('testid1234').and_call_original
-      expect(get_user(event: event)). to include(user_params)
+      expect(get_user(event: event)).to eq(user.as_hash)
     end
   end
 

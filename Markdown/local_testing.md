@@ -29,7 +29,7 @@ Now we can invoke lambdas with this script<br>
 Running without parameters will invoke CreateUser lamdba with default values<br>
 **default lamdba_name**: CreateUser<br>
 **default event**:<br>
-`'{ "id": "1", "username": "username", "gold": 100, "reputation": 0, "cards": {"slash": 5, "block": 5} }'`
+`'{ "user_id": "1", "username": "username", "gold": 100, "reputation": 0, "cards": {"slash": 5, "block": 5} }'`
 
 ### CreateUser
 Creates new user with data supplied, returns json string representation of it.
@@ -37,13 +37,13 @@ Creates new user with data supplied, returns json string representation of it.
 supported event keys:
  - id (required)
  - username (required)
- - gold (optional)
- - reputation (optional)
+ - gold (required)
+ - reputation (required)
  - card (optional)
 
 Example for creating user with all supported parameters<br>
 ```bash
-./invoke.sh CreateUser '{"id": "user-1", "username": "name", "gold": 10, "reputation": 10,\
+./invoke.sh CreateUser '{"user_id": "user-1", "username": "name", "gold": 10, "reputation": 10,\
                         "cards": { "slash": 3, "magic missle": 4, "block": 4, "holy light": 2 } }'                        
 ```
 
@@ -55,7 +55,7 @@ supported event keys:
 
 Example for GetUser:<br>
 ```bash
-./invoke.sh GetUser '{ "id": "2" }'
+./invoke.sh GetUser '{ "user_id": "2" }'
 ```
 
 ### UpdateUser
@@ -72,6 +72,12 @@ supported event keys:
 
 Examples for UpdateUser:<br>
 ```bash
-./invoke.sh UpdateUser '{ "id": "1", "gold": 10, "reputation": 5, "cards": {"healing word": 1} }'
-./invoke.sh UpdateUser '{ "id": "1", "cards": {"healing word": 0} }'
+# update gold and card count for "healing word"
+./invoke.sh UpdateUser '{ "user_id": "1", "gold": 10, "reputation": 5, "cards": {"healing word": 1} }'
+# remove healing word from table
+./invoke.sh UpdateUser '{ "user_id": "1", "cards": {"healing word": 0} }'
+# create pending quest 
+./invoke.sh UpdateUser '{"user_id": "1","quests": [{ "scenario_id": 2, "complete": false, "random_seed": 2, "duration": 60}]}'
+# update quest to complete
+./invoke.sh UpdateUser '{"user_id": "1","quests": [{ "id": "104decdb-6bf8-437b-ba8b-cd8f0aab58a2", "complete": true}]}'
 ```

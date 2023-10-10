@@ -7,22 +7,6 @@ The models and other shared code id defined in lambda layers under `layers/ruby/
 
 `updated_at` and `created_at` are automatically generated fields with timestamps of creations and updates.
 
-
-# Lambda JSON Payload
-When invoking lambdas user data will be returned in a simpler JSON like this:
-```json
-{
-  "user_id": "1",
-  "username": "username",
-  "gold": 100,
-  "reputation": 0,
-  "cards": {
-    "block": 5,
-    "slash": 5
-  }
-}
-```
-
 # Users Table
 User table is defined by [user dynamoid model](/layer/ruby/lib/user.rb)
 
@@ -35,21 +19,27 @@ Dynamo data example
     },
     "card_counts_ids": {
       "SS": [
-        "1c052be4-24c7-4ed0-8052-cb17af35ccc9",
-        "984aced5-c296-42a3-a0ab-2bc310f021d4"
+        "56a699e1-8827-44dd-87e5-cb1ea2f2a746",
+        "8afd053f-bff6-47fa-9cf6-dfa830df0c75"
+      ]
+    },
+    "quests_ids": {
+      "SS": [
+        "104decdb-6bf8-437b-ba8b-cd8f0aab58a2",
+        "ffa22eab-3ba0-4e1e-a43b-3dc59ac877e4"
       ]
     },
     "updated_at": {
-      "N": "1696924655.274203842"
+      "N": "1696942346.008867927"
     },
-    "id": {
+    "user_id": {
       "S": "1"
     },
     "reputation": {
       "N": "0"
     },
     "created_at": {
-      "N": "1696924655.186389408"
+      "N": "1696942208.76828924"
     },
     "username": {
       "S": "username"
@@ -59,9 +49,11 @@ Dynamo data example
 ```
 `id`: is cognito sub attribute used as primary key (ther is no sorting key)<br>
 `username`: username is cognito username attribute<br>
-`gold`: is the users gold amount used to buy new booster-packs and quire cards<br>
-`reputation`: is the users gold amount used to buy new booster-packs and quire cards<br>
-`cards`: array of card count ids which are stored in another dynamo db table<br> 
+`gold`: number for users gold amount used to buy new booster-packs and quire cards<br>
+`reputation`: number for users reputation acting like experience to manage difficulty in game<br>
+`cards`: array of card count ids which are stored in another dynamo db table<br>
+`quests`: array of quest ids which are stored in another dynamo db table<br>
+
 
 Dynamoid automatically creates another table for card_counts because of has many association with custom field `CardCount`.<br>
 This is not optimized, as everything could be stored in a single table and access data with less web calls.<br>
@@ -94,5 +86,40 @@ Card Counts table is defined by [card counts dynamoid model](/layer/ruby/lib/car
 
 `id`: string and primary key to loo up card counts<br>
 `card_name`: string name for the card<br>
-`count`: integer count of how many of that card in library<br>
+`count`: number count of how many of that card in library<br>
 
+# Quests Table
+Card Counts table is defined by [card counts dynamoid model](/layer/ruby/lib/quest.rb)
+
+```json
+{
+  "Item": {
+    "random_seed": {
+      "N": "2"
+    },
+    "duration": {
+      "N": "60"
+    },
+    "updated_at": {
+      "N": "1696942425.946585043"
+    },
+    "created_at": {
+      "N": "1696942345.984931951"
+    },
+    "id": {
+      "S": "104decdb-6bf8-437b-ba8b-cd8f0aab58a2"
+    },
+    "complete": {
+      "BOOL": true
+    },
+    "scenario_id": {
+      "N": "2"
+    }
+  }
+}
+```
+`id`: string and primary key to loo up card counts<br>
+`scenario_id`: number used to look up quest data once in game<br>
+`complete`: boolean representing if quest is complete whether it was success or failure<br>
+`duration`: number duration in seconds from start of quest until finish, can be used to calculate time remaining<br>
+`random_seed`: used to calculate randomness when evaluating quest result<br>

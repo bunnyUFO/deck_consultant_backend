@@ -8,14 +8,15 @@ def update_user(event: nil, context: nil)
   user = DeckConsultant::User.find(event['user_id'])
   user.set_data(gold: event['gold'], reputation: event['reputation'])
   user.set_cards(event['cards'])
+  user.set_quests(event['quests'])
 
-  if user.changed? || event['cards']
+  if user.changed? || event['cards'] ||event['quests']
     user.save!
   else
     return { warning: "user not changed since it already has same values" }
   end
 
-  user.user_data.merge(cards: user.card_data)
+  user.as_hash
 
 rescue Dynamoid::Errors::RecordNotFound
   { message: "User with user_id #{event['user_id']} not found" }

@@ -7,10 +7,10 @@ describe 'update user lamdba' do
     "reputation" => 10
   } }
 
-  let(:user_params) { { user_id: 'testid1234', username: 'testname', gold: 100, reputation: 0 } }
+  let(:user_params) { { user_id: 'testid1234', username: 'testname', gold: 100, reputation: 0, card_counts: { slash: 1, block: 1 } } }
 
   context 'when user exists' do
-    let!(:user) { DeckConsultant::User.create(user_params) }
+    let!(:user) { DeckConsultant::User.create!(user_params) }
 
     it 'returns new updated user' do
       expect(update_user(event: event)).to include(event.transform_keys(&:to_sym))
@@ -41,7 +41,7 @@ describe 'update user lamdba' do
       let(:event) { {
         "user_id" => 'testid1234',
         "quests" => [
-          { "scenario_id" => 2, "complete" => false, "random_seed" => 2, "duration" => 60 }
+          { "scenario_id" => 2, "complete" => false, "random_seed" => 2, "duration" => 60, "deck" => { "slash" => 10 } }
         ]
       } }
 
@@ -58,7 +58,8 @@ describe 'update user lamdba' do
                         complete: false,
                         random_seed: 2,
                         duration: 60,
-                        remaining: 60
+                        remaining: 60,
+                        deck: { slash: 10 }
                       }
                     ]
                   }

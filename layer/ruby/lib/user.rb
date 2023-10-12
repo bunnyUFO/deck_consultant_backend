@@ -10,22 +10,21 @@ module DeckConsultant
     field :username
     field :gold, :integer
     field :reputation, :integer
-    has_many :card_counts, class: CardCount
+    field :card_counts, :map
     has_many :quests, class: Quest
 
-    validates_presence_of :username, :gold, :reputation
+    validates_presence_of :username, :gold, :reputation, :card_counts
     validates_numericality_of :gold, :reputation, greater_than_or_equal_to: 0
+    validate :card_counts_valid?
+
+    # before_validation :make_card_counts_integers
 
     def as_hash
-      user_data.merge(quest_data).merge({ cards: card_data })
+      user_data.merge(quest_data)
     end
 
     def user_data
-      { user_id: user_id, username: username, gold: gold, reputation: reputation }
-    end
-
-    def card_data
-      card_counts.reduce({}) { |card_counts, card| card_counts.merge(card.as_hash) }
+      { user_id: user_id, username: username, gold: gold, reputation: reputation, cards: cards }
     end
 
     def quest_data
@@ -37,16 +36,11 @@ module DeckConsultant
       }
     end
 
-    def set_data(gold: nil, reputation: nil, cards: nil)
-      self.gold = gold if gold
-      self.reputation = reputation if reputation
-    end
-
     def set_cards(cards)
-      cards&.each do |card_name, count|
-        if count.is_a?(Integer) && card_name.is_a?(String)
-          update_card_count(card_name, count) || add_card(card_name, count)
-        end
+      return unless cards.is_a? Hash
+      self.card_counts = cards.reduce({}) do |counts, (card, count)|
+        counts[card.to_sym] = count if count.is_a?(Numeric) && count > 0
+        counts
       end
     end
 
@@ -60,26 +54,11 @@ module DeckConsultant
       end
     end
 
+    def cards
+      card_counts.transform_values(&:to_i)
+    end
+
     private
-
-    def update_card_count(card_name, count)
-      card = card_counts.where(card_name: card_name).first
-      return false unless card
-
-      if count > 0
-        card.count = count
-        card.save!
-      else
-        card.destroy!
-      end
-
-      true
-    end
-
-    def add_card(card_name, count)
-      card_counts.create(card_name: card_name, count: count) if count > 0
-    end
-
     def complete_quest(quest_id)
       quests&.find(quest_id)&.each { |q| q&.update_attribute(:complete, true) }
     end
@@ -89,7 +68,14 @@ module DeckConsultant
         scenario_id: quest_info['scenario_id'],
         complete: false,
         random_seed: quest_info['random_seed'],
-        duration: quest_info['duration'])
+        duration: quest_info['duration'],
+        deck: quest_info['deck']&.transform_keys(&:to_sym))
+    end
+
+    def card_counts_valid?
+      return errors.add(:deck, "deck must be a Hash object") unless card_counts.is_a? Hash
+      return errors.add(:deck, "all keys must be strings") unless card_counts&.keys.all? { |k| k.is_a?(String) || k.is_a?(Symbol)}
+      errors.add(:deck, "all values must be integers") unless card_counts&.values.all? { |v| v.is_a?(Numeric) }
     end
   end
 end

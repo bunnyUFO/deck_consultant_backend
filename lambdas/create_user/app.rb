@@ -6,14 +6,12 @@ def create_user(event: nil, context: nil)
   Configure.aws
   Configure.dynamoid
 
-  user = DeckConsultant::User.new(
+  user = DeckConsultant::User.create!(
     user_id: event['user_id'],
     username: event['username'],
     gold: event['gold'],
-    reputation: event['reputation'])
-
-  user.set_cards(event['cards'])
-  user.save!
+    reputation: event['reputation'],
+    card_counts: event['cards'].transform_keys(&:to_sym))
 
   { message: "Created user with username #{user.username}" }
 

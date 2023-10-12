@@ -18,7 +18,10 @@ When invoking lambdas user data will be returned in simpler JSON like this:
       "complete": false, 
       "random_seed": 2, 
       "duration": 60, 
-      "remaining": 30
+      "remaining": 30,
+      "deck": {
+        "slash": 10
+      }
     }], 
     "complete": [{
       "id": "104decdb-6bf8-437b-ba8b-cd8f0aab58a2", 
@@ -26,7 +29,11 @@ When invoking lambdas user data will be returned in simpler JSON like this:
       "complete": true, 
       "random_seed": 2, 
       "duration": 60, 
-      "remaining": 0
+      "remaining": 0,
+      "deck": {
+        "healing word": 2,
+        "block": 3,
+        "slash": 5      }
     }]
   }
 }
@@ -40,7 +47,9 @@ user data is at the top level
 
 `Pending quests`: are ones where user has not yet received a reward/punishment.<br>
 `Completed quests`: are the inverse where user has received reward/punishment.<br>
-`random_seed`: is used to calculate randomness in game, and allow for consistent quest replay logs.<br>
-`scenario_id`: is used to look up the quest data from game assets<br>
-`remaining`: is a calculated field from quest created date, time now, and duration. When duration reaches 0 and player is<br>
-in game rewards/punishments are distributed<br>
+`random_seed`: used to calculate randomness in game, and allow for consistent quest replay logs.<br>
+`scenario_id`: used to look up the quest data from in game from game assets<br>
+`remaining`: calculated field from quest created date, time now, and duration. 
+`deck`: deck used on quest to simulate battles against monsters in scenario 
+
+When duration reaches 0 and player is in game rewards/punishments are distributed<br>

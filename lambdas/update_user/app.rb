@@ -6,7 +6,8 @@ def update_user(event: nil, context: nil)
   Configure.dynamoid
 
   user = DeckConsultant::User.find(event['user_id'])
-  user.set_data(gold: event['gold'], reputation: event['reputation'])
+  user.gold = event['gold'] if event['gold']
+  user.reputation = event['reputation'] if event['gold']
   user.set_cards(event['cards'])
   user.set_quests(event['quests'])
 

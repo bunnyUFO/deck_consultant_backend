@@ -76,8 +76,8 @@ Examples for UpdateUser:<br>
 ./invoke.sh UpdateUser '{ "user_id": "1", "gold": 10, "reputation": 5, "cards": {"healing word": 1} }'
 # remove healing word from table
 ./invoke.sh UpdateUser '{ "user_id": "1", "cards": {"healing word": 0} }'
-# create pending quest 
-./invoke.sh UpdateUser '{"user_id": "1","quests": [{ "scenario_id": 2, "complete": false, "random_seed": 2, "duration": 60}]}'
+# create pending quest card counts must add up to 10
+./invoke.sh UpdateUser '{"user_id": "1","quests": [{ "scenario_id": 2, "complete": false, "random_seed": 2, "duration": 60, "deck": { "slash": 5, "block": 5 }}]}'
 # update quest to complete
 ./invoke.sh UpdateUser '{"user_id": "1","quests": [{ "id": "104decdb-6bf8-437b-ba8b-cd8f0aab58a2", "complete": true}]}'
 ```

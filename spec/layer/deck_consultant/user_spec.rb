@@ -62,7 +62,7 @@ describe DeckConsultant::User do
 
   describe '#user_data' do
     it 'returns hash with user data' do
-      expect(user.user_data).to eq({ user_id: 'testid1234', username: 'testname',  gold: 100, reputation: 0, cards: deck })
+      expect(user.user_data).to eq({ user_id: 'testid1234', username: 'testname', gold: 100, reputation: 0, cards: deck })
     end
   end
 
@@ -87,12 +87,12 @@ describe DeckConsultant::User do
   end
 
   describe '#set_cards' do
-    let(:card_counts) { { slash: 5, block: 5 } }
+    let(:card_counts) { { pierce: 5, block: 5 } }
 
     it 'sets card data' do
       expect {
         user.set_cards(card_counts)
-      }.to change { user.cards }.from({ slash: 10 }).to({ slash: 5, block: 5 })
+      }.to change { user.cards }.from({ slash: 10 }).to({ pierce: 5, block: 5 })
     end
   end
 

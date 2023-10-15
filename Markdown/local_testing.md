@@ -40,8 +40,11 @@ Example for creating user with all supported parameters<br>
 # Create user with default values
 ./invoke.sh CreateUser 
 # Create user with custom values
-./invoke.sh CreateUser '{"user_id": "2", "username": "name", "gold": 10, "reputation": 10,\
-                        "cards": { "slash": 3, "magic missle": 4, "block": 4, "holy light": 2 } }'                        
+./invoke.sh CreateUser \
+'{
+  "user_id": "2", "username": "name", "gold": 10, "reputation": 10,
+  "cards": {"slash": 3, "magic missile": 4, "block": 4, "holy light": 2}
+}'                        
 ```
 
 ### GetUser
@@ -60,26 +63,35 @@ Example for GetUser:<br>
 
 ### UpdateUser
 Updates user info with data supplied.<br>
-For cards will only update keys/value pairs provided and not overwrite other keys.
-Setting a card count to zero will delete the whole key value pair instead.
 
 supported event keys:
 - user_id (required)
 - username (required)
 - gold (optional)
 - reputation (optional)
-- card (optional)
+- cards (optional)
 
 Examples for UpdateUser:<br>
 ```bash
-# update gold and card count for "healing word"
-./invoke.sh UpdateUser '{ "user_id": "1", "gold": 10, "reputation": 5, "cards": {"healing word": 1} }'
-# remove healing word from table
-./invoke.sh UpdateUser '{ "user_id": "1", "cards": {"healing word": 0} }'
+# set gold and reputation
+./invoke.sh UpdateUser '{ "user_id": "1", "gold": 10, "reputation": 5'
+# set cards
+./invoke.sh UpdateUser '{ "user_id": "1", "cards": {"slash": 6, "block": 3, "healing word": 3 } }'
 # create pending quest
-./invoke.sh UpdateUser '{"user_id": "1","quests": [{ "scenario_id": 2, "complete": false, "random_seed": 2, "duration": 60, "deck": { "slash": 5, "block": 5 }}]}'
+./invoke.sh UpdateUser \
+'{"user_id": "1",
+  "quests": [{ 
+    "scenario_id": 2, "complete": false, "random_seed": 2, "duration": 60,
+    "deck": { "slash": 5, "block": 5 }
+    }]
+}'
 # update pending quest to complete
-./invoke.sh UpdateUser '{"user_id": "1","quests": [{ "id": "104decdb-6bf8-437b-ba8b-cd8f0aab58a2", "complete": true}]}'
+./invoke.sh UpdateUser \
+'{"user_id": "1",
+  "quests": [{ 
+    "id": "104decdb-6bf8-437b-ba8b-cd8f0aab58a2", "complete": true
+  }]
+}'
 ```
 
 ### DeleteUser

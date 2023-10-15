@@ -24,6 +24,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: deck-consultant-create-user
+      Role: !GetAtt LambdaRole.Arn
       CodeUri: lambdas/create_user/
       Handler: app.create_user
       Timeout: 15
@@ -32,6 +33,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: deck-consultant-get-user
+      Role: !GetAtt LambdaRole.Arn
       CodeUri: lambdas/get_user/
       Handler: app.get_user
       Timeout: 15
@@ -40,6 +42,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: deck-consultant-update-user
+      Role: !GetAtt LambdaRole.Arn
       CodeUri: lambdas/update_user/
       Handler: app.update_user
       Timeout: 15
@@ -127,8 +130,6 @@ Resources:
                   - "cognito-sync:*"
                 Resource: "*"
 
-  # Create a role for authorized acces to AWS resources. Control what your user can access. This example only allows Lambda invokation
-  # Only allows users in the previously created Identity Pool
   CognitoAuthorizedRole:
     Type: "AWS::IAM::Role"
     Properties:
@@ -164,3 +165,71 @@ Resources:
                   - !GetAtt CreateUser.Arn
                   - !GetAtt GetUser.Arn
                   - !GetAtt UpdateUser.Arn
+
+  UsersDynamoTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: deck_consultant_users
+      AttributeDefinitions:
+        - AttributeName: user_id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: user_id
+          KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+
+  QuestsDynamoTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: deck_consultant_quests
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+
+  LambdaRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: DeckBuilderLambdaRole
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Principal:
+              Service:
+                - "lambda.amazonaws.com"
+            Action:
+              - "sts:AssumeRole"
+
+  RolePolicies:
+    Type: "AWS::IAM::Policy"
+    Properties:
+      PolicyName: deck-consultant-dynamo-policy
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Action:
+              - "dynamodb:GetItem"
+              - "dynamodb:PutItem"
+              - "dynamodb:UpdateItem"
+              - "dynamodb:DeleteItem"
+              - "dynamodb:Query"
+            Resource:
+              - !GetAtt UsersDynamoTable.Arn
+              - !GetAtt QuestsDynamoTable.Arn
+          - Effect: "Allow"
+            Action:
+              - "logs:CreateLogGroup"
+              - "logs:CreateLogStream"
+              - "logs:PutLogEvents"
+            Resource: "*"
+      Roles:
+        - !Ref LambdaRole

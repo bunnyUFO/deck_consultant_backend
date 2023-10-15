@@ -26,6 +26,14 @@ Resources:
       Handler: app.create_user
       Timeout: 15
 
+  DeleteUser:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: deck-consultant-delete-user
+      Role: !GetAtt LambdaRole.Arn
+      CodeUri: lambdas/delete_user/
+      Handler: app.delete_user
+      Timeout: 15
 
   GetUser:
     Type: AWS::Serverless::Function

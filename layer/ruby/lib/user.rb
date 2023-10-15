@@ -17,7 +17,8 @@ module DeckConsultant
     validates_numericality_of :gold, :reputation, greater_than_or_equal_to: 0
     validate :card_counts_valid?
 
-    # before_validation :make_card_counts_integers
+    # Using destroy hook because dependent destroy is not supported by dynamoid has_many association
+    before_destroy :destroy_quests
 
     def as_hash
       user_data.merge(quest_data)
@@ -76,6 +77,10 @@ module DeckConsultant
       return errors.add(:deck, "deck must be a Hash object") unless card_counts.is_a? Hash
       return errors.add(:deck, "all keys must be strings") unless card_counts&.keys.all? { |k| k.is_a?(String) || k.is_a?(Symbol)}
       errors.add(:deck, "all values must be integers") unless card_counts&.values.all? { |v| v.is_a?(Numeric) }
+    end
+
+    def destroy_quests
+      quests.destroy_all
     end
   end
 end

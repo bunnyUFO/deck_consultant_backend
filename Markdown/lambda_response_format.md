@@ -33,7 +33,8 @@ When invoking lambdas user data will be returned in simpler JSON like this:
       "deck": {
         "healing word": 2,
         "block": 3,
-        "slash": 5      }
+        "slash": 5
+      }
     }]
   }
 }
@@ -49,7 +50,7 @@ user data is at the top level
 `Completed quests`: are the inverse where user has received reward/punishment.<br>
 `random_seed`: used to calculate randomness in game, and allow for consistent quest replay logs.<br>
 `scenario_id`: used to look up the quest data from in game from game assets<br>
-`remaining`: calculated field from quest created date, time now, and duration. 
+`remaining`: calculated field from quest created date, time now, and duration.<br>
 `deck`: deck used on quest to simulate battles against monsters in scenario 
 
-When duration reaches 0 and player is in game rewards/punishments are distributed<br>
+When remaining reaches 0 and player is in game rewards/punishments are distributed<br>

@@ -227,6 +227,7 @@ Resources:
           - Effect: "Allow"
             Action:
               - "dynamodb:GetItem"
+              - "dynamodb:BatchGetItem"
               - "dynamodb:PutItem"
               - "dynamodb:UpdateItem"
               - "dynamodb:DeleteItem"
@@ -239,6 +240,8 @@ Resources:
               - "logs:CreateLogGroup"
               - "logs:CreateLogStream"
               - "logs:PutLogEvents"
+              - "dynamodb:DescribeTable"
+              - "dynamodb:ListTables"
             Resource: "*"
       Roles:
         - !Ref LambdaRole

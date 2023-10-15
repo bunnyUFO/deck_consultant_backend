@@ -50,16 +50,6 @@ describe DeckConsultant::Quest do
                                'Validation failed: Deck all values must be integers')
         end
       end
-
-      context 'when values do not add up to deck card count' do
-        let(:deck) { { slash: 1, block: 5 } }
-
-        it 'raises error with correct error message' do
-          expect{subject}.to raise_error(
-                               Dynamoid::Errors::DocumentNotValid,
-                               'Validation failed: Deck card count values must add up to deck size 10')
-        end
-      end
     end
 
     describe '#as_hash' do

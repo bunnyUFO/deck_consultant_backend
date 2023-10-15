@@ -19,7 +19,6 @@ RSpec.configure do |config|
 
   config.before(:each) do
     DeckConsultant::User.destroy_all
-    DeckConsultant::CardCount.destroy_all
     DeckConsultant::Quest.destroy_all
   end
 

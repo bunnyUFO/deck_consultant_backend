@@ -13,7 +13,7 @@ module DeckConsultant
     field :deck, :map
 
     validates_presence_of :scenario_id, :random_seed, :complete, :duration
-    validate :valid_card_count?
+    validate :valid_deck?
     def as_hash
       {
         id: id,
@@ -27,15 +27,10 @@ module DeckConsultant
     end
 
     private
-
-    def valid_card_count?
-      card_count_is?(10)
-    end
-    def card_count_is?(size)
+    def valid_deck?
       return errors.add(:deck, "deck must be a Hash object") unless deck.is_a? Hash
       return errors.add(:deck, "all keys must be strings") unless deck.keys.all? { |k| k.is_a?(String) || k.is_a?(Symbol)}
       return errors.add(:deck, "all values must be integers") unless deck.values.all? { |v| v.is_a?(Numeric) }
-      errors.add(:deck, "card count values must add up to deck size #{size}") unless size == self.deck.values.reduce(0) { |sum, count| sum += count; sum }
     end
   end
 end

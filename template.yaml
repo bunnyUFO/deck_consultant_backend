@@ -71,6 +71,8 @@ Resources:
         RecoveryMechanisms:
           - Name: verified_email
             Priority: 1
+      VerificationMessageTemplate:
+        DefaultEmailOption: CONFIRM_WITH_LINK
       Schema:
         - Name: email
           AttributeDataType: String
@@ -79,7 +81,13 @@ Resources:
         - Name: preferred_username
           AttributeDataType: String
           Mutable: true
-          Required: true
+          Required: false
+
+  UserPoolDomain:
+    Type: AWS::Cognito::UserPoolDomain
+    Properties:
+      UserPoolId: !Ref UserPool
+      Domain: "deck-consultant-user-pool-domain"
 
   UserPoolClient:
     Type: AWS::Cognito::UserPoolClient
